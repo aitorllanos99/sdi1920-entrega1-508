@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="teacher/fragments/head" />
+<body>
+	<nav th:replace="teacher/fragments/nav" />
+
+ 
+
+	<div class="container">
+		<h2>Detalles del profesor</h2>
+		<div class="panel panel-default">
+			<div class="panel-heading">Dni</div>
+			<div class="panel-body" th:text="${teacher.dni}">8846763763K</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Nombre</div>
+			<div class="panel-body" th:text="${teacher.nombre}">Pepe</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Apellido</div>
+			<div class="panel-body" th:text="${teacher.apellido}">Garcia</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Categoria</div>
+			<div class="panel-body" th:text="${teacher.categoria}">Ingles</div>
+		</div>
+	</div>
+
+
+</body>
+</html>
