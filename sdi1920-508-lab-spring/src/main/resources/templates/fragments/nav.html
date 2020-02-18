@@ -11,14 +11,14 @@
 		</div>
 		<div class="collapse navbar-collapse" id="myNavbar">
 			<ul class="nav navbar-nav">
-				<li><a href="/">Home</a></li>
+				<li><a href="/" th:text="#{home.nav}"></a></li>
 				<li id="marks-menu" class="dropdown">
 				<a class="dropdown-toogle"
-					data-toggle="dropdown" href="#"> Gestion de notas
+					data-toggle="dropdown" href="#" th:text="#{marks.title}">
 				</a>
 					<ul class="dropdown-menu">
-						<li><a href="/mark/add">Agregar Nota</a></li>
-						<li><a href="/mark/list">Ver Notas</a></li>
+						<li><a href="/mark/add"th:text="#{marks.add}"></a></li>
+						<li><a href="/mark/list" th:text="#{marks.list}"></a></li>
 					</ul> <span class = "caret"></span>
 			    </li>
 				<li id="users-menu" class="dropdown"><a class="dropdown-toogle"
