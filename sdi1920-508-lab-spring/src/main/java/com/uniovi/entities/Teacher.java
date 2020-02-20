@@ -3,6 +3,8 @@ package com.uniovi.entities;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Teacher {
@@ -14,14 +16,17 @@ public class Teacher {
 	private String nombre;
 	private String apellido;
 	private String categoria;
+	@ManyToOne
+	@JoinColumn(name = "department_id")private Department department;
 	
-	public Teacher(Long id, String dni, String nombre, String apellido, String categoria) {
+	public Teacher(Long id, String dni, String nombre, String apellido, String categoria, Department department) {
 		super();
 		this.id  = id;
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.categoria = categoria;
+		this.department = department;
 	}
 	
 	public Teacher() {
@@ -66,6 +71,14 @@ public class Teacher {
 
 	public void setCategoria(String categoria) {
 		this.categoria = categoria;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
 	}
 	
 	

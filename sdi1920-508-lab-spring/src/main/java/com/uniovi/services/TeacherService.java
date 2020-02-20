@@ -16,6 +16,9 @@ public class TeacherService {
 	@Autowired
 	private TeacherRepository teacherRepository;
 	
+	public Teacher findByDni(String dni) {
+		return teacherRepository.findByDni(dni);
+	}
 	
 	public List<Teacher> getTeachers(){
 		List<Teacher> teachers = new ArrayList<Teacher>();

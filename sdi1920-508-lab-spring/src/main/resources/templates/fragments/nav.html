@@ -25,6 +25,13 @@
 						<li><a href="/user/add" th:text="#{nav.userAdd}"></a></li>
 						<li><a href="/user/list" th:text="#{nav.userList}"></a></li>
 					</ul></li>
+						<li id="teachers-menu" class="dropdown"><a class="dropdown-toogle"
+					data-toggle="dropdown" href="#" th:text="#{nav.teacherTitle}"></a><span
+					class="caret"></span>
+					<ul class="dropdown-menu">
+						<li><a href="/teacher/add" th:text="#{nav.teacherAdd}"></a></li>
+						<li><a href="/teacher/list" th:text="#{nav.teacherList}"></a></li>
+					</ul></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown"><a id="btnLanguage" href=" #"
