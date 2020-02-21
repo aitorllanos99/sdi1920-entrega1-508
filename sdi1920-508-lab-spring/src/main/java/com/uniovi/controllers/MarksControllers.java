@@ -1,5 +1,10 @@
 package com.uniovi.controllers;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,12 +28,16 @@ public class MarksControllers {
 	private UsersService usersService;
 	@Autowired
 	private AddMarksValidator addMarkValidator;
+
+	@Autowired
+	private HttpSession httpSession;
+
 	@RequestMapping("/mark/list")
 	public String getList(Model model) {
 		model.addAttribute("markList", marksService.getMarks());
 		return "mark/list";
 	}
-	
+
 	@RequestMapping(value = "/mark/add", method = RequestMethod.GET)
 	public String setMark(Model model) {
 		model.addAttribute("mark", new Mark());
@@ -38,7 +47,7 @@ public class MarksControllers {
 	@RequestMapping(value = "/mark/add", method = RequestMethod.POST)
 	public String setMark(@Validated Mark mark, BindingResult result) {
 		addMarkValidator.validate(mark, result);
-		if(result.hasErrors())
+		if (result.hasErrors())
 			return "/mark/add";
 		marksService.addMark(mark);
 		return "redirect:/mark/list";
@@ -71,7 +80,7 @@ public class MarksControllers {
 
 	@RequestMapping(value = "/mark/edit/{id}", method = RequestMethod.POST)
 	public String setEdit(Model model, @PathVariable Long id, @ModelAttribute Mark mark) {
-		Mark original = marksService.getMark(id); 
+		Mark original = marksService.getMark(id);
 		// modificar solo score y description
 		original.setScore(mark.getScore());
 		original.setDescription(mark.getDescription());
