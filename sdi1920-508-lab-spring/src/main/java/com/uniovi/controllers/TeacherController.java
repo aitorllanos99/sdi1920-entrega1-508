@@ -32,7 +32,7 @@ public class TeacherController {
 	public String setTeacher(@Validated Teacher teacher, BindingResult result) {
 		addTeacherValidator.validate(teacher, result);
 		if(result.hasErrors())
-			return "/teacher/add";
+			return "teacher/add";
 		teacherService.addTeacher(teacher);
 		return "redirect:/teacher/list";
 	}

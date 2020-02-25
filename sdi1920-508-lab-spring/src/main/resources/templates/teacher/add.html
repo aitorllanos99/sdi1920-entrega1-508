@@ -7,7 +7,7 @@
 
 	<div class="container">
 		<h2 th:text="#{teacher.add.title}"></h2>
-		<form class="form-horizontal" method="post" action="/teacher/add">
+		<form class="form-horizontal" method="post" action="/teacher/add" th:object="${teacher}">
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="dni"
 					th:text="#{teacher.add.dni}"></label>
