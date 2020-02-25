@@ -27,12 +27,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().authorizeRequests()
 				.antMatchers("/css/**", "/img/**", "/script/**", "/", "/signup", "/login/**").permitAll()
-				.antMatchers("/mark/add").hasAuthority("ROLE_PROFESSOR").antMatchers("/mark/edit/*")
-				.hasAuthority("ROLE_PROFESSOR").antMatchers("/mark/delete/*").hasAuthority("-ROLE_PROFESSOR")
-				.antMatchers("/mark/**").hasAnyAuthority("ROLE_STUDENT", "ROLE_PROFESSOR", "ROLE_ADMIN")
-				.antMatchers("/user/**").hasAnyAuthority("ROLE_ADMIN").anyRequest().authenticated().and().formLogin()
-				.loginPage("/login").failureUrl("/login").permitAll().defaultSuccessUrl("/home").and().logout()
-				.permitAll();
+				.antMatchers("/mark/add").hasAuthority("ROLE_PROFESSOR").antMatchers("/teacher/add")
+				.hasAnyAuthority("ROLE_ADMIN").antMatchers("/mark/edit/*").hasAuthority("ROLE_PROFESSOR")
+				.antMatchers("/teacher/edit").hasAnyAuthority("ROLE_ADMIN").antMatchers("/mark/delete/*").hasAuthority("-ROLE_PROFESSOR").antMatchers("/mark/**")
+				.hasAnyAuthority("ROLE_STUDENT", "ROLE_PROFESSOR", "ROLE_ADMIN").antMatchers("/user/**")
+				.hasAnyAuthority("ROLE_ADMIN").anyRequest().authenticated().and().formLogin().loginPage("/login")
+				.failureUrl("/login").permitAll().defaultSuccessUrl("/home").and().logout().permitAll();
 	}
 
 	@Autowired
@@ -45,9 +45,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
-	
+
 	@Bean
 	public SpringSecurityDialect securityDialect() {
-	return new SpringSecurityDialect();
+		return new SpringSecurityDialect();
 	}
 }

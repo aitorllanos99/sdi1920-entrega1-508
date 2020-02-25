@@ -55,4 +55,11 @@ public class TeacherController {
 		teacherService.addTeacher(teacher);
 		return "redirect:/teacher/details/" + id;
 	}
+	
+	@RequestMapping(value = "/teacher/list", method = RequestMethod.GET)
+	public String getList() {
+		return "/teacher/list";
+	}
+	
+	
 }

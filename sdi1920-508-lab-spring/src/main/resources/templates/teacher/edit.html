@@ -6,7 +6,7 @@
 
 
  
-	<div class="container">
+	<div class="container" sec:authorize="hasRole('ROLE_ADMIN')">
 		<h2>Editar Profesor</h2>
 		<form class="form-horizontal" method="post"
 			th:action="${'/teacher/edit/' + teacher.id}">
