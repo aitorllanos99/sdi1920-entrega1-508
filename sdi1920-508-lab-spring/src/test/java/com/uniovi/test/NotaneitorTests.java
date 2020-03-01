@@ -35,8 +35,9 @@ public class NotaneitorTests {
 	// Antes de la primera prueba
 	@BeforeClass
 	static public void begin() {
-	} // Al finalizar la última prueba
-
+	} 
+	
+	// Al finalizar la última prueba
 	@AfterClass
 	static public void end() {
 		// Cerramos el navegador al finalizar las pruebas
