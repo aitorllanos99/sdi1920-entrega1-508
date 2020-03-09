@@ -1,72 +1,41 @@
 <!-- nav.html -->
 <nav class="navbar navbar-inverse">
 	<div class="container-fluid">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse"
-				data-target="#myNavbar">
-				<span class="icon-bar"></span> <span class="icon-bar"></span> <span
-					class="icon-bar"></span>
-			</button>
-			<img src="/img/student-48.png" alt="logo" />
-		</div>
 		<div class="collapse navbar-collapse" id="myNavbar">
-			<ul class="nav navbar-nav" sec:authorize="isAuthenticated()">
+			<ul class="nav navbar-nav">
 				<li><a href="/" th:text="#{home.nav}"></a></li>
-				<li id="marks-menu" class="dropdown"><a class="dropdown-toogle"
-					data-toggle="dropdown" href="#" th:text="#{marks.title}"> </a>
-					<ul class="dropdown-menu">
-						<lisec:authorize="isAuthenticated()">
-							<a href="/mark/add" th:text="#{marks.add}"></a></li>
-				<li><a href="/mark/list" th:text="#{marks.list}"></a></li>
-			</ul>
-			<span class="caret"></span>
-			</li>
-			<li id="users-menu" class="dropdown"
-				sec:authorize="hasRole('ROLE_ADMIN')"><a
+			<li id="users-menu" class="dropdown"><a
 				class="dropdown-toogle" data-toggle="dropdown" href="#"
 				th:text="#{nav.userTitle}"></a><span class="caret"></span>
 				<ul class="dropdown-menu">
-					<li><a href="/user/add" th:text="#{nav.userAdd}"></a></li>
 					<li><a href="/user/list" th:text="#{nav.userList}"></a></li>
-				</ul></li>
-			<li id="teachers-menu" class="dropdown" sec:authorize="hasRole('ROLE_ADMIN')"><a
-				class="dropdown-toogle" data-toggle="dropdown" href="#"
-				th:text="#{nav.teacherTitle}"></a><span class="caret"></span>
-				<ul class="dropdown-menu">
-					<li><a href="/teacher/add" th:text="#{nav.teacherAdd}"></a></li>
-					<li><a href="/teacher/list" th:text="#{nav.teacherList}"></a></li>
 				</ul></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown"><a id="btnLanguage" href=" #"
 					class="dropdown-toggle" data-toggle="dropdown" role="button"
 					aria-haspopup="true" aria-expanded="false"> <span
-						th:text="#{language.change}"></span> <span class="caret"></span>
+						th:text="#{language.message}"></span> <span class="caret"></span>
 				</a>
 					<ul id="languageDropdownMenuButton" class="dropdown-menu">
 						<li><a id="btnEnglish" value="EN"> <img
 								th:src="@{/img/if_uk_flag.png}"
 								style="border: 0; float: left; margin-right: 15px" /> <span
-								th:text="#{language.en}">Ingles</span>
+								th:text="#{english.message}"></span>
 						</a></li>
 						<li><a id="btnSpanish" value="ES"> <img
 								th:src="@{/img/if_spain_flag.png}"
 								style="border: 0; float: left; margin-right: 15px" /> <span
-								th:text="#{language.es}">Espanol</span>
-						</a></li>
-						<li><a id="btnGerman" value="DE"> <img
-								th:src="@{/img/if_german_flag.png}"
-								style="border: 0; float: left; margin-right: 15px" /> <span
-								th:text="#{language.de}">Aleman</span>
+								th:text="#{spanish.message}"></span>
 						</a></li>
 					</ul></li>
 				<li sec:authorize="!isAuthenticated()"><a href="/signup"
 					th:text="#{signup.message}"> <span
-						class="glyphicon glyphicon-user"></span> Registrate
+						class="glyphicon glyphicon-user"></span>
 				</a></li>
 				<li sec:authorize="!isAuthenticated()"><a href="/login"
 					th:text="#{login.message}"> <span
-						class="glyphicon glyphicon-log-in"></span> Identificate
+						class="glyphicon glyphicon-log-in"></span>
 				</a></li>
 				<li sec:authorize="isAuthenticated()"><a href="/logout"> <span
 						class="glyphicon glyphicon-log-out"></span> Desconectar

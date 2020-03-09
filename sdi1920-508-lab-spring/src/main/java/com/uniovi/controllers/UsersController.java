@@ -1,6 +1,12 @@
 package com.uniovi.controllers;
 
+import java.security.Principal;
+import java.util.LinkedList;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -31,11 +37,17 @@ public class UsersController {
 	private RolesService rolesService;
 
 	@RequestMapping("/user/list")
-	public String getListado(Model model, @RequestParam (value = "", required=false) String searchText) {
+	public String getListado(Model model, Pageable pageable,@RequestParam (value = "", required=false) String searchText, Principal principal) {
+		User user = usersService.getUser(principal.getName());
+		Page<User> users = new PageImpl<User>(new LinkedList<User>());
 		if(searchText != null && !searchText.isEmpty())
-			model.addAttribute("usersList", usersService.searchByNameOrLastName(searchText));
+			users = usersService.searchByNameOrLastNameOrEmailOrRole(pageable,searchText,user);
 		else
-			model.addAttribute("usersList", usersService.getUsers());
+			users = usersService.searchByNameOrLastNameOrEmailOrRole(pageable,searchText,user);
+		
+		model.addAttribute("usersList", users.getContent());
+		model.addAttribute("page", users);
+		
 		return "user/list";
 	}
 
@@ -52,32 +64,32 @@ public class UsersController {
 	}
 
 	@RequestMapping("/user/details/{id}")
-	public String getDetail(Model model, @PathVariable Long id) {
-		model.addAttribute("user", usersService.getUser(id));
+	public String getDetail(Model model, @PathVariable String email) {
+		model.addAttribute("user", usersService.getUser(email));
 		return "user/details";
 	}
 
 	@RequestMapping("/user/delete/{id}")
-	public String delete(@PathVariable Long id) {
-		usersService.deleteUser(id);
+	public String delete(@PathVariable String email) {
+		usersService.deleteUser(email);
 		return "redirect:/user/list";
 	}
 
 	@RequestMapping(value = "/user/edit/{id}")
-	public String getEdit(Model model, @PathVariable Long id) {
-		User user = usersService.getUser(id);
+	public String getEdit(Model model, @PathVariable String email) {
+		User user = usersService.getUser(email);
 		model.addAttribute("user", user);
 		return "user/edit";
 	}
 
 	@RequestMapping(value = "/user/edit/{id}", method = RequestMethod.POST)
-	public String setEdit(Model model, @PathVariable Long id, @ModelAttribute User user) {
-		User original = usersService.getUser(id);
+	public String setEdit(Model model, @PathVariable String email, @ModelAttribute User user) {
+		User original = usersService.getUser(email);
 		// modificar solo nombre y apellidos
 		original.setName(user.getName());
 		original.setLastName(user.getLastName());
 		usersService.addUser(original);
-		return "redirect:/user/details/" + id;
+		return "redirect:/user/details/" + email;
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
@@ -87,8 +99,8 @@ public class UsersController {
 			return "signup";
 		user.setRole(rolesService.getRoles()[0]);
 		usersService.addUser(user);
-		securityService.autoLogin(user.getDni(), user.getPasswordConfirm());
-		return "redirect::home";
+		securityService.autoLogin(user.getEmail(), user.getPasswordConfirm());
+		return "redirect:/user/list";
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
@@ -101,13 +113,7 @@ public class UsersController {
 	public String login(Model model) {
 		return "login";
 	}
+	
+	
 
-	@RequestMapping(value = { "/home" }, method = RequestMethod.GET)
-	public String home(Model model) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String dni = auth.getName();
-		User activeUser = usersService.getUserByDni(dni);
-		model.addAttribute("markList", activeUser.getMarks());
-		return "home";
-	}
 }

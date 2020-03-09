@@ -1,11 +1,13 @@
 package com.uniovi.services;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +21,18 @@ public class UsersService {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
 	@PostConstruct
 	public void init() {
 	}
 
-	public List<User> getUsers() {
-		List<User> users = new ArrayList<User>();
-		usersRepository.findAll().forEach(users::add);
+	public Page<User> getUsers(Pageable pageable, User user) {
+		Page<User> users = new PageImpl<User>(new LinkedList<User>());
+		usersRepository.findAll(pageable);
 		return users;
 	}
 
-	public User getUser(Long id) {
-		return usersRepository.findById(id).get();
+	public User getUser(String email) {
+		return usersRepository.findByEmail(email);
 	}
 
 	public void addUser(User user) {
@@ -39,18 +40,17 @@ public class UsersService {
 		usersRepository.save(user);
 	}
 
-	public User getUserByDni(String dni) {
-		return usersRepository.findByDni(dni);
+	public void deleteUser(String email) {
+		usersRepository.deleteById(email);
 	}
 
-	public void deleteUser(Long id) {
-		usersRepository.deleteById(id);
-	}
-	
-	public List<User> searchByNameOrLastName(String searchText) {
-		List<User> users = new ArrayList<User>();
-		searchText = "%"+searchText+"%";
-		users = usersRepository.findByNameOrLastName(searchText);
+	public Page<User> searchByNameOrLastNameOrEmailOrRole(Pageable pageable, String searchText, User user) {
+		Page<User> users = new PageImpl<User>(new LinkedList<User>());
+		searchText = "%" + searchText + "%";
+		if(user.getRole() == "ROLE_ADMIN")
+			users = usersRepository.findByNameOrLastNameOrEmail(pageable, searchText, user.getEmail());
+		else
+			users = usersRepository.findByNameOrLastNameOrEmailAndAutenticated(pageable, searchText, user.getEmail());
 		return users;
 	}
 
