@@ -1,8 +1,5 @@
 package com.uniovi.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -20,9 +17,6 @@ public class User {
 	private String password;
 
 	
-	private List<User> friendPetition = new ArrayList<User>();
-	
-	private List<User> friends = new ArrayList<User>();
 	@Transient // propiedad que no se almacena e la tabla.
 	private String passwordConfirm;
 

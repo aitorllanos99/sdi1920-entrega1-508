@@ -47,10 +47,18 @@ public class UsersService {
 	public Page<User> searchByNameOrLastNameOrEmailOrRole(Pageable pageable, String searchText, User user) {
 		Page<User> users = new PageImpl<User>(new LinkedList<User>());
 		searchText = "%" + searchText + "%";
-		if(user.getRole() == "ROLE_ADMIN")
-			users = usersRepository.findByNameOrLastNameOrEmail(pageable, searchText, user.getEmail());
-		else
-			users = usersRepository.findByNameOrLastNameOrEmailAndAutenticated(pageable, searchText, user.getEmail());
+		if (searchText == null || searchText.isEmpty()) {
+			users = usersRepository.findAllAutenticated(pageable, user.getEmail());
+		}else {
+			if (user.getRole() == "ROLE_ADMIN") {
+				users = usersRepository.findByNameOrLastNameOrEmail(pageable, searchText, user.getEmail());
+			}
+			else {
+				users = usersRepository.findByNameOrLastNameOrEmailAndAutenticated(pageable, searchText,
+						user.getEmail());
+			}
+		}
+		
 		return users;
 	}
 
