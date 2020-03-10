@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,17 +35,43 @@ public class UsersController {
 	private RolesService rolesService;
 
 	@RequestMapping("/user/list")
-	public String getListado(Model model, Pageable pageable,@RequestParam (value = "", required=false) String searchText, Principal principal) {
+	public String getListado(Model model, Pageable pageable,
+			@RequestParam(value = "", required = false) String searchText, Principal principal) {
 		User user = usersService.getUser(principal.getName());
 		Page<User> users = new PageImpl<User>(new LinkedList<User>());
-		if(searchText != null && !searchText.isEmpty())
-			users = usersService.searchByNameOrLastNameOrEmailOrRole(pageable,searchText,user);
-		else
-			users = usersService.searchByNameOrLastNameOrEmailOrRole(pageable,searchText,user);
-		
+
+		users = usersService.searchByNameOrLastNameOrEmailOrRole(pageable, searchText, user);
+
+		model.addAttribute("usersList", users.getContent());
+
+		model.addAttribute("page", users);
+
+		return "user/list";
+	}
+
+	@RequestMapping("/user/listFriends")
+	public String getListadoAmgios(Model model, Pageable pageable, Principal principal) {
+		User user = usersService.getUser(principal.getName());
+		Page<User> users = new PageImpl<User>(new LinkedList<User>());
+
+		users = usersService.getFriends(pageable, user.getEmail());
+
 		model.addAttribute("usersList", users.getContent());
 		model.addAttribute("page", users);
-		
+
+		return "user/list";
+	}
+
+	@RequestMapping("/user/friendPetitions")
+	public String getListadoPeticiones(Model model, Pageable pageable, Principal principal) {
+		User user = usersService.getUser(principal.getName());
+		Page<User> users = new PageImpl<User>(new LinkedList<User>());
+
+		users = usersService.getFriendPetition(pageable, user.getEmail());
+
+		model.addAttribute("usersList", users.getContent());
+		model.addAttribute("page", users);
+
 		return "user/list";
 	}
 
@@ -113,7 +137,5 @@ public class UsersController {
 	public String login(Model model) {
 		return "login";
 	}
-	
-	
 
 }

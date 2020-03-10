@@ -17,7 +17,7 @@
 		<p th:text="#{user.list.p}"></p>
 		<div class="table-responsive">
 			<table class="table table-hover" th:fragment="tableUsers"
-					id="tableUsers">
+				id="tableUsers">
 				<thead>
 					<tr>
 						<th th:text="#{user.list.email}"></th>
@@ -36,21 +36,25 @@
 						<td th:text="${user.name}"></td>
 						<td th:text="${user.lastName}"></td>
 						<td>
-						<div>
-							<div th:if="${user.friend.send}">
-								<button type="button" th:id="${'friendPetitionButton' + user.email}"
-									class="btn btn-info" th:text="#{user.list.friendPetition.send}"></button>
-								<script th:inline="javascript"> /*<![CDATA[*/ $( "#friendPetitionButton[[${user.email}]]" ).click(function() { 
+							<div>
+								<div th:if="${true}">
+									<button type="button"
+										th:id="${'friendPetitionButton' + user.email}"
+										class="btn btn-info"
+										th:text="#{user.list.friendPetition.send}"></button>
+									<script th:inline="javascript"> /*<![CDATA[*/ $( "#friendPetitionButton[[${user.email}]]" ).click(function() { 
 									$.get( "/user/[[${user.email}]]/friendPetition", function( data ) { var numberPage = [[${param.page}]];
 									var urlUpdate = '/user/list/update';
 									if ( numberPage != null ){ urlUpdate += "?page="+numberPage[0]; }
 									$("#tableUsers").load(urlUpdate); }); }); /*]]>*/ </script>
+								</div>
+								<div th:unless="${true}">
+									<button type="button"
+										th:id="${'friendPetitionButtonSent' + user.email}"
+										class="btn btn-default"
+										th:text="#{user.list.friendPetition.sent}"></button>
+								</div>
 							</div>
-							<div th:unless="${user.friend.sent}">
-								<button type="button" th:id="${'friendPetitionButtonSent' + user.email}"
-									class="btn btn-default" th:text="#{user.list.friendPetition.sent}"></button>
-							</div>
-						</div>
 						</td>
 					</tr>
 				</tbody>

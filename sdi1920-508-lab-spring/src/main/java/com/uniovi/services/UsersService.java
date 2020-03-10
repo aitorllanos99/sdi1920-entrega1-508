@@ -43,22 +43,29 @@ public class UsersService {
 	public void deleteUser(String email) {
 		usersRepository.deleteById(email);
 	}
+	
+	public Page<User> getFriends(Pageable pageable, String email){
+		return usersRepository.findFriends(pageable, email);
+	}
+	
+	
+	public Page<User> getFriendPetition(Pageable pageable, String email){
+		return usersRepository.findFriendPetitions(pageable, email);
+	}
 
 	public Page<User> searchByNameOrLastNameOrEmailOrRole(Pageable pageable, String searchText, User user) {
 		Page<User> users = new PageImpl<User>(new LinkedList<User>());
 		searchText = "%" + searchText + "%";
-		if (searchText == null || searchText.isEmpty()) {
+		if (searchText.equals("%null%") || searchText.isEmpty()) {
 			users = usersRepository.findAllAutenticated(pageable, user.getEmail());
-		}else {
+		} else {
 			if (user.getRole() == "ROLE_ADMIN") {
 				users = usersRepository.findByNameOrLastNameOrEmail(pageable, searchText, user.getEmail());
-			}
-			else {
+			} else {
 				users = usersRepository.findByNameOrLastNameOrEmailAndAutenticated(pageable, searchText,
 						user.getEmail());
 			}
 		}
-		
 		return users;
 	}
 
