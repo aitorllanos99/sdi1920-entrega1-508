@@ -4,11 +4,19 @@
 		<div class="collapse navbar-collapse" id="myNavbar">
 			<ul class="nav navbar-nav">
 				<li><a href="/" th:text="#{home.nav}"></a></li>
-			<li id="users-menu" class="dropdown"><a
+			<li sec:authorize="isAuthenticated()" id="users-menu" class="dropdown"><a
 				class="dropdown-toogle" data-toggle="dropdown" href="#"
 				th:text="#{nav.userTitle}"></a><span class="caret"></span>
 				<ul class="dropdown-menu">
 					<li><a href="/user/list" th:text="#{nav.userList}"></a></li>
+				</ul></li>
+			</ul>
+			<li sec:authorize="isAuthenticated()" id="publications-menu" class="dropdown"><a
+				class="dropdown-toogle" data-toggle="dropdown" href="#"
+				th:text="#{nav.publicationTitle}"></a><span class="caret"></span>
+				<ul class="dropdown-menu">
+					<li><a href="/publication/add" th:text="#{nav.publicationAdd}"></a></li>
+					<li><a href="/publication/list" th:text="#{nav.publicationList}"></a></li>
 				</ul></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
@@ -38,7 +46,7 @@
 						class="glyphicon glyphicon-log-in"></span>
 				</a></li>
 				<li sec:authorize="isAuthenticated()"><a href="/logout"> <span
-						class="glyphicon glyphicon-log-out"></span> Desconectar
+						class="glyphicon glyphicon-log-out" th:text="#{logout.message}"></span>
 				</a></li>
 			</ul>
 		</div>

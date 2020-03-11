@@ -54,7 +54,7 @@ public class UsersController {
 		User user = usersService.getUser(principal.getName());
 		Page<User> users = new PageImpl<User>(new LinkedList<User>());
 
-		users = usersService.getFriends(pageable, user.getEmail());
+		//users = usersService.getFriends(pageable, user.getEmail());
 
 		model.addAttribute("usersList", users.getContent());
 		model.addAttribute("page", users);
@@ -67,11 +67,19 @@ public class UsersController {
 		User user = usersService.getUser(principal.getName());
 		Page<User> users = new PageImpl<User>(new LinkedList<User>());
 
-		users = usersService.getFriendPetition(pageable, user.getEmail());
+	//	users = usersService.getFriendPetition(pageable, user.getEmail());
 
 		model.addAttribute("usersList", users.getContent());
 		model.addAttribute("page", users);
 
+		return "user/list";
+	}
+
+	@RequestMapping("/user/{email}/friendPetition")
+	public String sendPetition(Model model, @PathVariable String email, Principal principal) {
+		User user = usersService.getUser(principal.getName());
+		User userTo = usersService.getUser(email);
+		//usersService.sendFriendPetition(user.getEmail(), userTo.getEmail());
 		return "user/list";
 	}
 

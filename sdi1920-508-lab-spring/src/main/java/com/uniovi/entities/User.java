@@ -1,6 +1,8 @@
 package com.uniovi.entities;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 @Entity
@@ -51,6 +54,9 @@ public class User {
 	)
 	private List<User> friendOf;
 
+	
+	@OneToMany(mappedBy="user")
+	private Set<Publication> publications = new HashSet<Publication>();
 	
 	@Transient // propiedad que no se almacena e la tabla.
 	private String passwordConfirm;

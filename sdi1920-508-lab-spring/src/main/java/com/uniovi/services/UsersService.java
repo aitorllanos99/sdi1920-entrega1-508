@@ -44,20 +44,24 @@ public class UsersService {
 		usersRepository.deleteById(email);
 	}
 	
-	public Page<User> getFriends(Pageable pageable, String email){
-		return usersRepository.findFriends(pageable, email);
-	}
-	
-	
-	public Page<User> getFriendPetition(Pageable pageable, String email){
-		return usersRepository.findFriendPetitions(pageable, email);
-	}
+	/*
+	 * public Page<User> getFriends(Pageable pageable, String email){ return
+	 * usersRepository.findFriends(pageable, email); }
+	 * 
+	 * 
+	 * public Page<User> getFriendPetition(Pageable pageable, String email){ return
+	 * usersRepository.findFriendPetitions(pageable, email); }
+	 */
 
 	public Page<User> searchByNameOrLastNameOrEmailOrRole(Pageable pageable, String searchText, User user) {
 		Page<User> users = new PageImpl<User>(new LinkedList<User>());
 		searchText = "%" + searchText + "%";
 		if (searchText.equals("%null%") || searchText.isEmpty()) {
-			users = usersRepository.findAllAutenticated(pageable, user.getEmail());
+			if (user.getRole() == "ROLE_ADMIN") {
+				users = usersRepository.findAllAutenticated(pageable, user.getEmail());
+			}else {
+				users = usersRepository.findAllAutenticatedNotAdmin(pageable, user.getEmail());
+			}
 		} else {
 			if (user.getRole() == "ROLE_ADMIN") {
 				users = usersRepository.findByNameOrLastNameOrEmail(pageable, searchText, user.getEmail());
@@ -68,5 +72,9 @@ public class UsersService {
 		}
 		return users;
 	}
+	
+//	public void sendFriendPetition(String emailFrom, String emailTo){
+//		usersRepository.sendPetition(emailFrom, emailTo);
+//	}
 
 }
