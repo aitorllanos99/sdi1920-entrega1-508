@@ -32,6 +32,7 @@
 				</thead>
 				<tbody>
 					<tr th:each="user : ${usersList}">
+						<input type="checkbox" th:id="${'checkbox' + user.email}">
 						<td th:text="${user.email}"></td>
 						<td th:text="${user.name}"></td>
 						<td th:text="${user.lastName}"></td>
@@ -59,6 +60,8 @@
 					</tr>
 				</tbody>
 			</table>
+			<button type="submit" class="btn btn-primary"
+						th:text="#{user.list.delete}"></button>
 		</div>
 		<footer th:replace="fragments/pagination" />
 	</div>

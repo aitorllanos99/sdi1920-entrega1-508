@@ -9,17 +9,27 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class Publication {
-	
+
 	@Id
 	@GeneratedValue
 	private Long id;
-	
+
 	private String title;
 	private String content;
 	private Date date;
-	
+
 	@ManyToOne
 	private User user;
+
+	public Publication() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Publication(String title, String content, Date date) {
+		this.title = title;
+		this.content = content;
+		this.date = date;
+	}
 
 	public Long getId() {
 		return id;
@@ -66,6 +76,5 @@ public class Publication {
 		return "Publication [id=" + id + ", title=" + title + ", content=" + content + ", date=" + date + ", user="
 				+ user + "]";
 	}
-	
-	
+
 }
