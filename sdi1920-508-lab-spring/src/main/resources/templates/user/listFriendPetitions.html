@@ -5,24 +5,15 @@
 	<!-- Barra de NavegaciÃ³n superior -->
 	<nav th:replace="fragments/nav" />
 	<div class="container">
-		<form class="navbar-form" action="/user/friendPetitions">
-			<div class="form-group">
-				<input name="searchText" type="text" class="form-control" size="50"
-					th:attr="placeholder = #{user.list.placeholder.search}">
-			</div>
-			<button type="submit" class="btn btn-default"
-				th:text="#{user.list.search}"></button>
-		</form>
-		<h2 th:text="#{user.list.title}"></h2>
-		<p th:text="#{user.list.p}"></p>
+		<h2 th:text="#{user.listPetitions.title}"></h2>
 		<div class="table-responsive">
 			<table class="table table-hover" th:fragment="tableUsers"
 					id="tableUsers">
 				<thead>
 					<tr>
-						<th th:text="#{user.list.email}"></th>
-						<th th:text="#{user.list.name}"></th>
-						<th th:text="#{user.list.lastName}"></th>
+						<th th:text="#{user.listPetitions.email}"></th>
+						<th th:text="#{user.listPetitions.name}"></th>
+						<th th:text="#{user.listPetitions.lastName}"></th>
 						<th class="col-md-1"></th>
 						<th class="col-md-1"></th>
 						<th class="col-md-1"></th>
@@ -35,21 +26,8 @@
 						<td th:text="${user.email}"></td>
 						<td th:text="${user.name}"></td>
 						<td th:text="${user.lastName}"></td>
-						<td>
-						<div>
-							<div th:if="${principal.friends.contains(user.email)}">
-								<button type="button" th:id="${'friendPetitionButton' + user.email}"
-									class="btn btn-info" th:text="#{user.list.friendPetition.send}"></button>
-								<script th:inline="javascript"> /*<![CDATA[*/ $( "#friendPetitionButton[[${user.email}]]" ).click(function() { 
-									$.get( "/user/[[${user.email}]]/accept", function( data ) { var numberPage = [[${param.page}]];
-									var urlUpdate = '/user/list/update';
-									if ( numberPage != null ){ urlUpdate += "?page="+numberPage[0]; }
-									$("#tableUsers").load(urlUpdate); }); }); /*]]>*/ </script>
-							</div>
-							<div th:unless="${user.friend.sent}">
-							</div>
-						</div>
-						</td>
+						<td><a th:href="${'/user/listPetitions/reject/' + user.email}" th:text="#{user.listPetitions.reject}"></a></td>
+						<td><a th:href="${'/user/listPetitions/accept/' + user.email}" th:text="#{user.listPetitions.accept}"></a></td>
 					</tr>
 				</tbody>
 			</table>

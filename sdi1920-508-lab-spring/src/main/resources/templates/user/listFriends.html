@@ -35,6 +35,7 @@
 						<td th:text="${user.email}"></td>
 						<td th:text="${user.name}"></td>
 						<td th:text="${user.lastName}"></td>
+						<td><a th:href="${'/publication/list/'+ user.email}" th:text="#{user.listFriends.seePublications}"></a></td>
 					</tr>
 				</tbody>
 			</table>

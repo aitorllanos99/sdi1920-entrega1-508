@@ -1,15 +1,10 @@
 package com.uniovi.entities;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -18,46 +13,26 @@ public class User {
 	@Id
 	@Column(nullable = false)
 	private String email;
-	
+
 	private String name;
 	private String lastName;
 	private String role;
 	private String password;
 
 	
-	@ManyToMany
-	@JoinTable(name="FriendPetitions",
-	 joinColumns=@JoinColumn(name="personId"),
-	 inverseJoinColumns=@JoinColumn(name="friendId")
-	)
-	private List<User> friendPetition;
+	private boolean requestable = true;
 
-	@ManyToMany
-	@JoinTable(name="FriendPetitions",
-	 joinColumns=@JoinColumn(name="friendId"),
-	 inverseJoinColumns=@JoinColumn(name="personId")
-	)
-	private List<User> friendPetitionOf;
+	@OneToMany(mappedBy = "from")
+	private Set<FriendRequest> sentRequests;
+	@OneToMany(mappedBy = "to")
+	private Set<FriendRequest> incomingRequests;
 
-	
-	@ManyToMany
-	@JoinTable(name="Friends",
-	 joinColumns=@JoinColumn(name="personId"),
-	 inverseJoinColumns=@JoinColumn(name="friendId")
-	)
-	private List<User> friends;
+	@OneToMany(mappedBy = "friend")
+	private Set<Friend> friends;
 
-	@ManyToMany
-	@JoinTable(name="Friends",
-	 joinColumns=@JoinColumn(name="friendId"),
-	 inverseJoinColumns=@JoinColumn(name="personId")
-	)
-	private List<User> friendOf;
+	@OneToMany(mappedBy = "user")
+	private Set<Publication> publications;
 
-	
-	@OneToMany(mappedBy="user")
-	private Set<Publication> publications = new HashSet<Publication>();
-	
 	@Transient // propiedad que no se almacena e la tabla.
 	private String passwordConfirm;
 
@@ -94,7 +69,7 @@ public class User {
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -125,8 +100,39 @@ public class User {
 
 	@Override
 	public String toString() {
-		return  "User [email=" + email + ", name=" + name + ", lastName=" + lastName + ", role=" + role + "]";
+		return "User [email=" + email + ", name=" + name + ", lastName=" + lastName + ", role=" + role + "]";
 	}
-	
-	
+
+	public boolean isRequestable() {
+		return requestable;
+	}
+
+	public void setRequestable(boolean requestable) {
+		this.requestable = requestable;
+	}
+
+	public Set<FriendRequest> getSentRequests() {
+		return sentRequests;
+	}
+
+	public void setSentRequests(Set<FriendRequest> sentRequests) {
+		this.sentRequests = sentRequests;
+	}
+
+	public Set<FriendRequest> getIncomingRequests() {
+		return incomingRequests;
+	}
+
+	public void setIncomingRequests(Set<FriendRequest> incomingRequests) {
+		this.incomingRequests = incomingRequests;
+	}
+
+	public Set<Publication> getPublications() {
+		return publications;
+	}
+
+	public void setPublications(Set<Publication> publications) {
+		this.publications = publications;
+	}
+
 }

@@ -32,36 +32,22 @@
 				</thead>
 				<tbody>
 					<tr th:each="user : ${usersList}">
-						<input type="checkbox" th:id="${'checkbox' + user.email}">
+						<td><input type="checkbox" sec:authorize=hasRole('ROLE_ADMIN') th:id="${'checkbox' + user.email}">
+						</td>
 						<td th:text="${user.email}"></td>
 						<td th:text="${user.name}"></td>
 						<td th:text="${user.lastName}"></td>
-						<td>
-							<div>
-								<div th:if="${true}">
-									<button type="button"
-										th:id="${'friendPetitionButton' + user.email}"
-										class="btn btn-info"
-										th:text="#{user.list.friendPetition.send}"></button>
-									<script th:inline="javascript"> /*<![CDATA[*/ $( "#friendPetitionButton[[${user.email}]]" ).click(function() { 
-									$.get( "/user/[[${user.email}]]/friendPetition", function( data ) { var numberPage = [[${param.page}]];
-									var urlUpdate = '/user/list/update';
-									if ( numberPage != null ){ urlUpdate += "?page="+numberPage[0]; }
-									$("#tableUsers").load(urlUpdate); }); }); /*]]>*/ </script>
-								</div>
-								<div th:unless="${true}">
-									<button type="button"
-										th:id="${'friendPetitionButtonSent' + user.email}"
-										class="btn btn-default"
-										th:text="#{user.list.friendPetition.sent}"></button>
-								</div>
-							</div>
-						</td>
+						<div>
+						<td><a th:if="${user.requestable}"
+							th:text="#{userlist.friendPetition.send}"
+							th:href="${'/user/friendPetition/' + user.email}"> </a></td>
+						<td th:unless="${user.requestable}"></td>
+						</div>
 					</tr>
 				</tbody>
 			</table>
-			<button type="submit" class="btn btn-primary"
-						th:text="#{user.list.delete}"></button>
+			<button type="submit" sec:authorize=hasRole('ROLE_ADMIN') class="btn btn-primary"
+				th:text="#{user.list.delete}"></button>
 		</div>
 		<footer th:replace="fragments/pagination" />
 	</div>

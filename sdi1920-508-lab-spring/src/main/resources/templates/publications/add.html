@@ -5,13 +5,17 @@
 	<!-- Barra de Navegación superior -->
 	<nav th:replace="fragments/nav" />
 	<div class="container">
-		<h2 th:text="#{user.add.title}"></h2>
-		<form class="form-horizontal" method="post" action="/publication/add">
+		<h2 th:text="#{publication.add.titlePrincipal}"></h2>
+		<form class="form-horizontal" method="post" action="/publication/add"
+			th:object="${publication}">
 			<div class="form-group">
-				<label class="control-label col-sm-2" for="title" th:text="#{publication.add.title}"></label>
+				<label class="control-label col-sm-2" for="title"
+					th:text="#{publication.add.title}"></label>
 				<div class="col-sm-10">
 					<input type="text" class="form-control" name="title"
-						th:attr="placeholder = #{publication.add.placeholder.title}" required="true"/>
+						th:attr="placeholder = #{publication.add.placeholder.title}" /> <span
+						class="text-danger" th:if="${#fields.hasErrors('title')}"
+						th:errors="*{title}"></span>
 				</div>
 			</div>
 			<div class="form-group">
@@ -19,16 +23,25 @@
 					th:text="#{publication.add.content}"></label>
 				<div class="col-sm-10">
 					<input type="text" class="form-control" name="content"
-						th:attr="placeholder = #{publication.add.placeholder.content}" required="true" />
+						th:attr="placeholder = #{publication.add.placeholder.content}" />
+					<span class="text-danger" th:if="${#fields.hasErrors('content')}"
+						th:errors="*{content}"></span>
 				</div>
 			</div>
 			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-					<button type="submit" class="btn btn-primary"
-						th:text="#{publication.add.upload}"></button>
-				</div>
+				<label class="control-label col-sm-2" for="img"
+					th:text="#{publication.add.selectImage}"></label> <input
+					type="file" id="img" name="img" accept="image/*">
 			</div>
-		</form>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button type="submit" class="btn btn-primary"
+				th:text="#{publication.add.upload}"></button>
+		</div>
+	</div>
+
+	</form>
 	</div>
 	<footer th:replace="fragments/footer" />
 </body>

@@ -44,6 +44,8 @@ public class UsersService {
 		usersRepository.deleteById(email);
 	}
 	
+
+	
 	/*
 	 * public Page<User> getFriends(Pageable pageable, String email){ return
 	 * usersRepository.findFriends(pageable, email); }

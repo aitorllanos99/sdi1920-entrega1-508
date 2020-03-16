@@ -2,6 +2,7 @@ package com.uniovi.controllers;
 
 import java.security.Principal;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,13 +12,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.uniovi.entities.Friend;
+import com.uniovi.entities.FriendRequest;
 import com.uniovi.entities.User;
+import com.uniovi.services.FriendRequestService;
+import com.uniovi.services.FriendsService;
 import com.uniovi.services.RolesService;
 import com.uniovi.services.SecurityService;
 import com.uniovi.services.UsersService;
@@ -33,95 +37,112 @@ public class UsersController {
 	private SignUpFormValidator signUpFormValidator;
 	@Autowired
 	private RolesService rolesService;
+	@Autowired
+	private FriendRequestService friendRequestsService;
+	@Autowired
+	private FriendsService friendsService;
 
 	@RequestMapping("/user/list")
 	public String getListado(Model model, Pageable pageable,
 			@RequestParam(value = "", required = false) String searchText, Principal principal) {
 		User user = usersService.getUser(principal.getName());
 		Page<User> users = new PageImpl<User>(new LinkedList<User>());
-
+		Page<FriendRequest> friendRequest = new PageImpl<FriendRequest>(new LinkedList<FriendRequest>());
+		Page<Friend> friends = new PageImpl<Friend>(new LinkedList<Friend>());
+		friendRequest = friendRequestsService.listByUser(pageable, user);
+		friends = friendsService.listByUser(pageable, user);
 		users = usersService.searchByNameOrLastNameOrEmailOrRole(pageable, searchText, user);
 
+		isRequestable(friends, friendRequest, users);
 		model.addAttribute("usersList", users.getContent());
 
 		model.addAttribute("page", users);
 
 		return "user/list";
+	}
+
+	@RequestMapping(value = "/user/friendPetition/{email}", method = RequestMethod.GET)
+	public String setFriendRequest(Principal principal, @PathVariable String email, Model model, Pageable pageable) {
+		User userTo = usersService.getUser(email);
+		User userFrom = usersService.getUser(principal.getName());
+		userTo.setRequestable(false);
+		userFrom.setRequestable(false);
+		friendRequestsService.addFriendRequest(userFrom, userTo);
+
+		Page<User> users = new PageImpl<User>(new LinkedList<User>());
+		Page<FriendRequest> friendRequest = new PageImpl<FriendRequest>(new LinkedList<FriendRequest>());
+		Page<Friend> friends = new PageImpl<Friend>(new LinkedList<Friend>());
+		friendRequest = friendRequestsService.listByUser(pageable, userFrom);
+		friends = friendsService.listByUser(pageable, userFrom);
+
+		users = usersService.searchByNameOrLastNameOrEmailOrRole(pageable, null, userFrom);
+
+		isRequestable(friends, friendRequest, users);
+		model.addAttribute("usersList", users.getContent());
+
+		model.addAttribute("page", users);
+		return "redirect:/user/list";
+	}
+
+	private void isRequestable(Page<Friend> friends, Page<FriendRequest> friendRequest, Page<User> users) {
+		for (FriendRequest fr : friendRequest) {
+			for (User u : users) {
+				for (Friend f : friends) {
+					if (fr.getTo().getEmail().equals(u.getEmail()) || fr.getFrom().getEmail().equals(u.getEmail())
+							|| f.getFriend().getEmail().equals(u.getEmail()))
+						u.setRequestable(false);
+					else
+						u.setRequestable(true);
+				}
+			}
+		}
 	}
 
 	@RequestMapping("/user/listFriends")
 	public String getListadoAmgios(Model model, Pageable pageable, Principal principal) {
 		User user = usersService.getUser(principal.getName());
-		Page<User> users = new PageImpl<User>(new LinkedList<User>());
+		List<User> users = new LinkedList<User>();
+		friendsService.listByUser(pageable, user).getContent().forEach(c -> users.add(c.getFriend()));
 
-		//users = usersService.getFriends(pageable, user.getEmail());
+		Page<User> usersP = new PageImpl<User>(users);
+		model.addAttribute("usersList", usersP.getContent());
+		model.addAttribute("page", usersP);
 
-		model.addAttribute("usersList", users.getContent());
-		model.addAttribute("page", users);
-
-		return "user/list";
+		return "user/listFriends";
 	}
 
-	@RequestMapping("/user/friendPetitions")
+	@RequestMapping("/user/listPetitions")
 	public String getListadoPeticiones(Model model, Pageable pageable, Principal principal) {
 		User user = usersService.getUser(principal.getName());
-		Page<User> users = new PageImpl<User>(new LinkedList<User>());
+		List<User> users = new LinkedList<User>();
+		friendRequestsService.listByUser(pageable, user).getContent().forEach(c -> users.add(c.getFrom()));
 
-	//	users = usersService.getFriendPetition(pageable, user.getEmail());
+		Page<User> usersP = new PageImpl<User>(users);
+		model.addAttribute("usersList", usersP.getContent());
+		model.addAttribute("page", usersP);
 
-		model.addAttribute("usersList", users.getContent());
-		model.addAttribute("page", users);
-
-		return "user/list";
+		return "user/listFriendPetitions";
 	}
 
-	@RequestMapping("/user/{email}/friendPetition")
-	public String sendPetition(Model model, @PathVariable String email, Principal principal) {
+	@RequestMapping("/user/listPetitions/reject/{email}")
+	public String rejectPetition(Principal principal, @PathVariable String email) {
+		User userFrom = usersService.getUser(email);
+		User userTo = usersService.getUser(principal.getName());
+		userTo.setRequestable(true);
+		userFrom.setRequestable(true);
+		friendRequestsService.deleteFriendRequest(userFrom, userTo);
+		return "redirect:/user/listPetitions";
+	}
+
+	@RequestMapping("/user/listPetitions/accept/{email}")
+	public String acceptPetition(Principal principal, @PathVariable String email) {
+		User userFriend = usersService.getUser(email);
 		User user = usersService.getUser(principal.getName());
-		User userTo = usersService.getUser(email);
-		//usersService.sendFriendPetition(user.getEmail(), userTo.getEmail());
-		return "user/list";
-	}
-
-	@RequestMapping(value = "/user/add")
-	public String getUser(Model model) {
-		model.addAttribute("rolesList", rolesService.getRoles());
-		return "user/add";
-	}
-
-	@RequestMapping(value = "/user/add", method = RequestMethod.POST)
-	public String setUser(@ModelAttribute User user) {
-		usersService.addUser(user);
-		return "redirect:/user/list";
-	}
-
-	@RequestMapping("/user/details/{id}")
-	public String getDetail(Model model, @PathVariable String email) {
-		model.addAttribute("user", usersService.getUser(email));
-		return "user/details";
-	}
-
-	@RequestMapping("/user/delete/{id}")
-	public String delete(@PathVariable String email) {
-		usersService.deleteUser(email);
-		return "redirect:/user/list";
-	}
-
-	@RequestMapping(value = "/user/edit/{id}")
-	public String getEdit(Model model, @PathVariable String email) {
-		User user = usersService.getUser(email);
-		model.addAttribute("user", user);
-		return "user/edit";
-	}
-
-	@RequestMapping(value = "/user/edit/{id}", method = RequestMethod.POST)
-	public String setEdit(Model model, @PathVariable String email, @ModelAttribute User user) {
-		User original = usersService.getUser(email);
-		// modificar solo nombre y apellidos
-		original.setName(user.getName());
-		original.setLastName(user.getLastName());
-		usersService.addUser(original);
-		return "redirect:/user/details/" + email;
+		user.setRequestable(false);
+		userFriend.setRequestable(false);
+		friendsService.addFriend(userFriend, user);
+		friendRequestsService.deleteFriendRequest(userFriend, user);
+		return "redirect:/user/listPetitions";
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)

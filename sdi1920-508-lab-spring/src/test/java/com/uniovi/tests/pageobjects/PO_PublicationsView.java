@@ -6,15 +6,18 @@ import org.openqa.selenium.WebElement;
 
 import com.uniovi.util.SeleniumUtils;
 
-public class PO_PrivateView extends PO_NavView {
+public class PO_PublicationsView {
 	
-	static public void searchByText(WebDriver driver,String searchTextp) {
+	static public void fillAddPublication(WebDriver driver,String titlep, String contentp) {
 		// Esperamos 5 segundo a que carge el DOM porque en algunos equipos falla
 		SeleniumUtils.esperarSegundos(driver, 5);
-		// Rellenemos el campo de descripción
-		WebElement searchText = driver.findElement(By.name("searchText"));
-		searchText.clear();
-		searchText.sendKeys(searchTextp);
+		// Rellenemos el campo de publicacion
+		WebElement title = driver.findElement(By.name("title"));
+		title.clear();
+		title.sendKeys(titlep);
+		WebElement content = driver.findElement(By.name("content"));
+		content.clear();
+		content.sendKeys(contentp);
 		By boton = By.className("btn");
 		driver.findElement(boton).click();
 	}

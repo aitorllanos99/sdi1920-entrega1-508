@@ -9,14 +9,23 @@
 				th:text="#{nav.userTitle}"></a><span class="caret"></span>
 				<ul class="dropdown-menu">
 					<li><a href="/user/list" th:text="#{nav.userList}"></a></li>
+					<li><a href="/user/listPetitions" th:text="#{nav.userListFriendPetitions}"></a></li>
+					<li><a href="/user/listFriends" th:text="#{nav.userListFriends}"></a></li>
 				</ul></li>
-			</ul>
+			
 			<li sec:authorize="isAuthenticated()" id="publications-menu" class="dropdown"><a
 				class="dropdown-toogle" data-toggle="dropdown" href="#"
 				th:text="#{nav.publicationTitle}"></a><span class="caret"></span>
 				<ul class="dropdown-menu">
 					<li><a href="/publication/add" th:text="#{nav.publicationAdd}"></a></li>
 					<li><a href="/publication/list" th:text="#{nav.publicationList}"></a></li>
+				</ul></li>
+				
+				
+			<li  sec:authorize=hasRole('ROLE_ADMIN') id="admin-menu" class="dropdown"><a
+				class="dropdown-toogle" data-toggle="dropdown" href="#"
+				th:text="#{nav.publicationTitle}"></a><span class="caret"></span>
+				<ul class="dropdown-menu">
 				</ul></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">

@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.type.ImageType;
+
 @Entity
 public class Publication {
 
@@ -18,17 +20,24 @@ public class Publication {
 	private String content;
 	private Date date;
 
+	private ImageType photo;
+	
 	@ManyToOne
 	private User user;
 
 	public Publication() {
 		// TODO Auto-generated constructor stub
 	}
-
 	public Publication(String title, String content, Date date) {
 		this.title = title;
 		this.content = content;
 		this.date = date;
+	}
+	public Publication(String title, String content, Date date, ImageType image) {
+		this.title = title;
+		this.content = content;
+		this.date = date;
+		this.photo = image;
 	}
 
 	public Long getId() {
@@ -69,6 +78,15 @@ public class Publication {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	
+	public ImageType getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(ImageType photo) {
+		this.photo = photo;
 	}
 
 	@Override
